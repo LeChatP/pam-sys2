@@ -14,9 +14,10 @@ const LINUX_PAM_CLONE_DIR: &'static str = "target/linux-pam";
 #[cfg(feature = "generate-bindings")]
 const OPEN_PAM_CLONE_DIR: &'static str = "target/openpam";
 #[cfg(feature = "generate-bindings")]
-const LINUX_PAM_SUBFOLDERS: &'static[&'static str; 2] = &["libpam/include/security/", "libpamc/include/security/"];
+const LINUX_PAM_SUBFOLDERS: &'static [&'static str; 2] =
+    &["libpam/include/security/", "libpamc/include/security/"];
 #[cfg(feature = "generate-bindings")]
-const OPEN_PAM_SUBFOLDERS: &'static[&'static str; 1] = &["include/security/"];
+const OPEN_PAM_SUBFOLDERS: &'static [&'static str; 1] = &["include/security/"];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum PamImplementation {
@@ -141,7 +142,12 @@ fn sparse_checkout(url: &str, dir: &str, subfolders: &[&str]) {
 
         // Set sparse checkout paths
         let output = std::process::Command::new("git")
-            .args(&mut ["sparse-checkout", "set", "--no-cone"].iter().chain(subfolders.iter()).into_iter())
+            .args(
+                &mut ["sparse-checkout", "set", "--no-cone"]
+                    .iter()
+                    .chain(subfolders.iter())
+                    .into_iter(),
+            )
             .current_dir(dir)
             .output()
             .expect("Failed to set sparse checkout paths");
@@ -183,11 +189,7 @@ fn sparse_checkout(url: &str, dir: &str, subfolders: &[&str]) {
 
 #[cfg(feature = "generate-bindings")]
 fn generate_linuxpam(out_dir: &PathBuf) {
-    sparse_checkout(
-        LINUX_PAM_REPO,
-        LINUX_PAM_CLONE_DIR,
-        LINUX_PAM_SUBFOLDERS,
-    );
+    sparse_checkout(LINUX_PAM_REPO, LINUX_PAM_CLONE_DIR, LINUX_PAM_SUBFOLDERS);
     base_builder(
         "wrapper-linuxpam.h",
         &["/usr/include"],
@@ -215,11 +217,7 @@ fn generate_linuxpam(out_dir: &PathBuf) {
 
 #[cfg(feature = "generate-bindings")]
 fn generate_openpam(out_dir: &PathBuf) {
-    sparse_checkout(
-        OPEN_PAM_REPO,
-        OPEN_PAM_CLONE_DIR,
-        OPEN_PAM_SUBFOLDERS,
-    );
+    sparse_checkout(OPEN_PAM_REPO, OPEN_PAM_CLONE_DIR, OPEN_PAM_SUBFOLDERS);
     base_builder("wrapper-openpam.h", &[], &[])
         .raw_line("use libc::passwd;")
         .blocklist_type("passwd")

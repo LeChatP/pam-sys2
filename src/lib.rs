@@ -31,10 +31,7 @@ pub const PAM_IMPLEMENTATION: PamImplementation = {
         PamImplementation::OpenPAM
     }
 
-    #[cfg(not(any(
-        PAM_SYS_IMPL = "linux-pam",
-        PAM_SYS_IMPL = "openpam",
-    )))]
+    #[cfg(not(any(PAM_SYS_IMPL = "linux-pam", PAM_SYS_IMPL = "openpam",)))]
     compile_error!("No valid PAM implementation selected")
 };
 
@@ -43,7 +40,10 @@ pub mod linuxpam {
     include!(concat!(env!("OUT_DIR"), "/linuxpam.rs"));
 }
 
-#[cfg(all(any(doc, PAM_SYS_IMPL = "linux-pam"), not(feature = "generate-bindings")))]
+#[cfg(all(
+    any(doc, PAM_SYS_IMPL = "linux-pam"),
+    not(feature = "generate-bindings")
+))]
 pub mod linuxpam;
 
 #[cfg(all(any(doc, PAM_SYS_IMPL = "openpam"), feature = "generate-bindings"))]
@@ -77,14 +77,22 @@ mod tests {
 
     #[test]
     fn test_pam_is_working() {
-        unsafe{
+        unsafe {
             match PAM_IMPLEMENTATION {
                 PamImplementation::LinuxPAM => {
                     use std::ffi::CString;
                     let service = CString::new("test_service").unwrap();
                     let user = CString::new("test_user").unwrap();
                     let mut pamh: *mut linuxpam::pam_handle_t = std::ptr::null_mut();
-                    assert_eq!(linuxpam::pam_start(service.as_ptr(), user.as_ptr(), std::ptr::null_mut(), &mut pamh), PAM_SUCCESS);
+                    assert_eq!(
+                        linuxpam::pam_start(
+                            service.as_ptr(),
+                            user.as_ptr(),
+                            std::ptr::null_mut(),
+                            &mut pamh
+                        ),
+                        PAM_SUCCESS
+                    );
                     assert!(!pamh.is_null());
                     assert_eq!(linuxpam::pam_end(pamh, PAM_SUCCESS), PAM_SUCCESS);
                 }
@@ -93,7 +101,5 @@ mod tests {
                 }
             }
         }
-        
     }
-        
 }

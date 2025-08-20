@@ -116,7 +116,7 @@ fn base_builder(
 }
 
 #[cfg(feature = "generate-bindings")]
-fn sparse_checkout(url: &str, dir: &str, subfolders: &[&str]) {
+fn sparse_checkout(url: &str, branch: &str, dir: &str, subfolders: &[&str]) {
     // Clone the repository if it doesn't exist
     if !PathBuf::from(dir).exists() {
         let output = std::process::Command::new("git")
@@ -159,7 +159,7 @@ fn sparse_checkout(url: &str, dir: &str, subfolders: &[&str]) {
 
         // Checkout the repository
         let output = std::process::Command::new("git")
-            .args(&["checkout", "master"])
+            .args(&["checkout", branch])
             .current_dir(dir)
             .output()
             .expect("Failed to checkout repository");
@@ -189,7 +189,7 @@ fn sparse_checkout(url: &str, dir: &str, subfolders: &[&str]) {
 
 #[cfg(feature = "generate-bindings")]
 fn generate_linuxpam(out_dir: &PathBuf) {
-    sparse_checkout(LINUX_PAM_REPO, LINUX_PAM_CLONE_DIR, LINUX_PAM_SUBFOLDERS);
+    sparse_checkout(LINUX_PAM_REPO, "master", LINUX_PAM_CLONE_DIR, LINUX_PAM_SUBFOLDERS);
     base_builder(
         "wrapper-linuxpam.h",
         &["/usr/include"],
@@ -217,7 +217,7 @@ fn generate_linuxpam(out_dir: &PathBuf) {
 
 #[cfg(feature = "generate-bindings")]
 fn generate_openpam(out_dir: &PathBuf) {
-    sparse_checkout(OPEN_PAM_REPO, OPEN_PAM_CLONE_DIR, OPEN_PAM_SUBFOLDERS);
+    sparse_checkout(OPEN_PAM_REPO, "main", OPEN_PAM_CLONE_DIR, OPEN_PAM_SUBFOLDERS);
     base_builder("wrapper-openpam.h", &[], &[])
         .raw_line("use libc::passwd;")
         .blocklist_type("passwd")

@@ -69,11 +69,10 @@ jobs:
         usesh: true
         sync: sshfs
         prepare: |
-          pkg install -y curl
+          pkg install -y curl llvm-devel git
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           . ~/.cargo/env
           rustup component add clippy rustfmt
-          pkg install -y llvm-devel git
         run: |
           . ~/.cargo/env
           cargo fmt -- --check

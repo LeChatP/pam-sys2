@@ -39,23 +39,23 @@ pub const PAM_IMPLEMENTATION: PamImplementation = {
 };
 
 #[cfg(all(any(doc, PAM_SYS_IMPL = "linux-pam"), feature = "generate-bindings"))]
-pub mod linux_pam {
+pub mod linuxpam {
     include!(concat!(env!("OUT_DIR"), "/linux_pam.rs"));
 }
 
 #[cfg(all(any(doc, PAM_SYS_IMPL = "linux-pam"), not(feature = "generate-bindings")))]
-pub mod linux_pam;
+pub mod linuxpam;
 
 #[cfg(all(any(doc, PAM_SYS_IMPL = "openpam"), feature = "generate-bindings"))]
-pub mod open_pam {
+pub mod openpam {
     include!(concat!(env!("OUT_DIR"), "/openpam.rs"));
 }
 
 #[cfg(all(any(doc, PAM_SYS_IMPL = "openpam"), not(feature = "generate-bindings")))]
-pub mod open_pam;
+pub mod openpam;
 
 #[cfg(PAM_SYS_IMPL = "linux-pam")]
-pub use linux_pam::*;
+pub use linuxpam::*;
 
 #[cfg(PAM_SYS_IMPL = "openpam")]
 pub use openpam::*;
@@ -83,13 +83,13 @@ mod tests {
                     use std::ffi::CString;
                     let service = CString::new("test_service").unwrap();
                     let user = CString::new("test_user").unwrap();
-                    let mut pamh: *mut linux_pam::pam_handle_t = std::ptr::null_mut();
-                    assert_eq!(linux_pam::pam_start(service.as_ptr(), user.as_ptr(), std::ptr::null_mut(), &mut pamh), PAM_SUCCESS);
+                    let mut pamh: *mut linuxpam::pam_handle_t = std::ptr::null_mut();
+                    assert_eq!(linuxpam::pam_start(service.as_ptr(), user.as_ptr(), std::ptr::null_mut(), &mut pamh), PAM_SUCCESS);
                     assert!(!pamh.is_null());
-                    assert_eq!(linux_pam::pam_end(pamh, PAM_SUCCESS), PAM_SUCCESS);
+                    assert_eq!(linuxpam::pam_end(pamh, PAM_SUCCESS), PAM_SUCCESS);
                 }
                 PamImplementation::OpenPAM => {
-                    assert!(open_pam::openpam_start("test_service", "test_user").is_ok());
+                    assert!(openpam::openpam_start("test_service", "test_user").is_ok());
                 }
             }
         }

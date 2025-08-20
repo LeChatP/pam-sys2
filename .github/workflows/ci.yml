@@ -71,11 +71,11 @@ jobs:
         prepare: |
           pkg install -y curl
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          source ~/.cargo/env
+          . ~/.cargo/env
           rustup component add clippy rustfmt
           pkg install -y llvm-devel git
         run: |
-          source ~/.cargo/env
+          . ~/.cargo/env
           cargo fmt -- --check
           cargo clippy -- -D warnings
           cargo build --verbose

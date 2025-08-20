@@ -75,6 +75,7 @@ jobs:
           rustup component add clippy rustfmt
         run: |
           . ~/.cargo/env
+          export CC=clang
           cargo fmt -- --check
           cargo clippy -- -D warnings
           cargo build --verbose

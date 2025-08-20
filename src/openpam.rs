@@ -86,7 +86,7 @@ pub const PAM_BAD_ITEM: _bindgen_ty_1 = 31;
 pub const PAM_BAD_FEATURE: _bindgen_ty_1 = 32;
 pub const PAM_BAD_CONSTANT: _bindgen_ty_1 = 33;
 pub const PAM_NUM_ERRORS: _bindgen_ty_1 = 34;
-pub type _bindgen_ty_1 = libc::c_uint;
+pub type _bindgen_ty_1 = libc::c_int;
 pub const PAM_PROMPT_ECHO_OFF: _bindgen_ty_2 = 1;
 pub const PAM_PROMPT_ECHO_ON: _bindgen_ty_2 = 2;
 pub const PAM_ERROR_MSG: _bindgen_ty_2 = 3;
@@ -94,7 +94,7 @@ pub const PAM_TEXT_INFO: _bindgen_ty_2 = 4;
 pub const PAM_MAX_NUM_MSG: _bindgen_ty_2 = 32;
 pub const PAM_MAX_MSG_SIZE: _bindgen_ty_2 = 512;
 pub const PAM_MAX_RESP_SIZE: _bindgen_ty_2 = 512;
-pub type _bindgen_ty_2 = libc::c_uint;
+pub type _bindgen_ty_2 = libc::c_int;
 pub const PAM_SILENT: _bindgen_ty_3 = -2147483648;
 pub const PAM_DISALLOW_NULL_AUTHTOK: _bindgen_ty_3 = 1;
 pub const PAM_ESTABLISH_CRED: _bindgen_ty_3 = 1;
@@ -119,7 +119,7 @@ pub const PAM_AUTHTOK_PROMPT: _bindgen_ty_4 = 11;
 pub const PAM_OLDAUTHTOK_PROMPT: _bindgen_ty_4 = 12;
 pub const PAM_HOST: _bindgen_ty_4 = 13;
 pub const PAM_NUM_ITEMS: _bindgen_ty_4 = 14;
-pub type _bindgen_ty_4 = libc::c_uint;
+pub type _bindgen_ty_4 = libc::c_int;
 unsafe extern "C" {
     pub fn pam_acct_mgmt(_pamh: *mut pam_handle_t, _flags: libc::c_int) -> libc::c_int;
 }

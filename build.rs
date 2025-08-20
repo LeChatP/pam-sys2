@@ -229,10 +229,10 @@ fn generate_openpam(out_dir: &PathBuf) {
         OPEN_PAM_SUBFOLDERS,
     );
     base_builder("wrapper-openpam.h", &[], &[])
-        .raw_line("use libc::passwd;")
         .blocklist_type("passwd")
         .allowlist_var("OPENPAM_.*")
         .allowlist_function("openpam_.*")
+        .clang_arg("-fms-compatibility")
         .generate()
         .expect("Unable to generate OpenPAM bindings")
         .write_to_file(out_dir.join("openpam.rs"))

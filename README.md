@@ -9,9 +9,9 @@ definitions for PAM. For a rustified API consider using [`pam`](https://github.c
 
 ## Fork maintenance
 
-Hello! I forked this crate to provide maintenance and updates, since the original author has not been active for several years. I will make sure the crate remains functional and up to date with the latest Rust, Linux-PAM and OpenPAM developments.
+Hello! I forked this crate to provide maintenance and updates, since the original author has not been active for several years. This version integrates the latest changes from the original repository and adds some improvements, such as support for both Linux-PAM and OpenPAM, updated bindings generation, and with a functionnal CI.
 
-If you’d like to join the discussion, please open an issue.
+While I will do my best to keep this fork up-to-date and functional, please note that I strongly recommend using `nonstick` instead of this crate for new projects.
 
 ## Changes
 

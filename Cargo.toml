@@ -1,8 +1,8 @@
 [package]
 
-name = "pam-sys"
+name = "pam-sys2"
 version = "1.0.0"
-authors = ["Florian Wilkens <gh@1wilkens.org>"]
+authors = ["Florian Wilkens <gh@1wilkens.org>", "LeChatP <lechatp@outlook.fr>"]
 description = "FFI wrappers for the Linux Pluggable Authentication Modules (PAM)"
 license = "MIT OR Apache-2.0"
 categories = ["authentication", "api-bindings", "external-ffi-bindings", "os::unix-apis"]

@@ -76,28 +76,80 @@ mod tests {
     }
 
     #[test]
-    fn test_pam_is_working() {
+    #[cfg(PAM_SYS_IMPL = "linux-pam")]
+    fn test_linuxpam_is_working() {
         unsafe {
             match PAM_IMPLEMENTATION {
                 PamImplementation::LinuxPAM => {
                     use std::ffi::CString;
                     let service = CString::new("test_service").unwrap();
                     let user = CString::new("test_user").unwrap();
-                    let mut pamh: *mut linuxpam::pam_handle_t = std::ptr::null_mut();
+
+                    // Create a minimal conversation structure
+                    extern "C" fn conv_func(
+                        _num_msg: ::std::os::raw::c_int,
+                        _msg: *mut *const pam_message,
+                        _resp: *mut *mut pam_response,
+                        _appdata_ptr: *mut ::std::os::raw::c_void,
+                    ) -> ::std::os::raw::c_int {
+                        PAM_SUCCESS
+                    }
+
+                    let conv = pam_conv {
+                        conv: Some(conv_func),
+                        appdata_ptr: std::ptr::null_mut(),
+                    };
+
+                    let mut pamh: *mut pam_handle_t = std::ptr::null_mut();
                     assert_eq!(
-                        linuxpam::pam_start(
-                            service.as_ptr(),
-                            user.as_ptr(),
-                            std::ptr::null_mut(),
-                            &mut pamh
-                        ),
+                        pam_start(service.as_ptr(), user.as_ptr(), &conv, &mut pamh),
                         PAM_SUCCESS
                     );
                     assert!(!pamh.is_null());
-                    assert_eq!(linuxpam::pam_end(pamh, PAM_SUCCESS), PAM_SUCCESS);
+                    assert_eq!(pam_end(pamh, PAM_SUCCESS), PAM_SUCCESS);
                 }
                 PamImplementation::OpenPAM => {
-                    assert!(openpam::openpam_start("test_service", "test_user").is_ok());
+                    panic!("pam_sys is not configured for OpenPAM");
+                }
+            }
+        }
+    }
+
+    #[test]
+    #[cfg(PAM_SYS_IMPL = "openpam")]
+    fn test_openpam_is_working() {
+        unsafe {
+            match PAM_IMPLEMENTATION {
+                PamImplementation::OpenPAM => {
+                    use std::ffi::CString;
+                    let service = CString::new("test_service").unwrap();
+                    let user = CString::new("test_user").unwrap();
+
+                    // Create a minimal conversation structure
+                    extern "C" fn conv_func(
+                        _num_msg: ::std::os::raw::c_int,
+                        _msg: *mut *const pam_message,
+                        _resp: *mut *mut pam_response,
+                        _appdata_ptr: *mut ::std::os::raw::c_void,
+                    ) -> ::std::os::raw::c_int {
+                        PAM_SUCCESS
+                    }
+
+                    let conv = pam_conv {
+                        conv: Some(conv_func),
+                        appdata_ptr: std::ptr::null_mut(),
+                    };
+
+                    let mut pamh: *mut pam_handle_t = std::ptr::null_mut();
+                    assert_eq!(
+                        pam_start(service.as_ptr(), user.as_ptr(), &conv, &mut pamh),
+                        PAM_SUCCESS
+                    );
+                    assert!(!pamh.is_null());
+                    assert_eq!(pam_end(pamh, PAM_SUCCESS), PAM_SUCCESS);
+                }
+                PamImplementation::LinuxPAM => {
+                    panic!("pam_sys is not configured for LinuxPAM");
                 }
             }
         }

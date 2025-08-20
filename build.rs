@@ -209,7 +209,7 @@ fn generate_linuxpam(out_dir: &PathBuf) {
     .blocklist_type("spwd")
     .generate()
     .expect("Unable to generate Linux-PAM bindings")
-    .write_to_file(out_dir.join("linux_pam.rs"))
+    .write_to_file(out_dir.join("linuxpam.rs"))
     .expect("Couldn't write Linux-PAM bindings");
 }
 

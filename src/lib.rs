@@ -40,7 +40,7 @@ pub const PAM_IMPLEMENTATION: PamImplementation = {
 
 #[cfg(all(any(doc, PAM_SYS_IMPL = "linux-pam"), feature = "generate-bindings"))]
 pub mod linuxpam {
-    include!(concat!(env!("OUT_DIR"), "/linux_pam.rs"));
+    include!(concat!(env!("OUT_DIR"), "/linuxpam.rs"));
 }
 
 #[cfg(all(any(doc, PAM_SYS_IMPL = "linux-pam"), not(feature = "generate-bindings")))]

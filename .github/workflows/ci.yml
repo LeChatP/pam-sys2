@@ -82,3 +82,4 @@ jobs:
           cargo clippy -- -D warnings
           cargo build --verbose
           cargo test --verbose
+          cargo test --verbose --features generate-bindings

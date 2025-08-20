@@ -235,7 +235,6 @@ fn generate_openpam(out_dir: &PathBuf) {
         .blocklist_type("passwd")
         .allowlist_var("OPENPAM_.*")
         .allowlist_function("openpam_.*")
-        .clang_arg("-fms-compatibility")
         .generate()
         .expect("Unable to generate OpenPAM bindings")
         .write_to_file(out_dir.join("openpam.rs"))

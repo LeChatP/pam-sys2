@@ -1,8 +1,8 @@
 [package]
 
-name = "pam-sys"
-version = "1.0.0-alpha.5"
-authors = ["Florian Wilkens <gh@1wilkens.org>"]
+name = "pam-sys2"
+version = "1.0.0"
+authors = ["Florian Wilkens <gh@1wilkens.org>", "LeChatP <lechatp@outlook.fr>"]
 description = "FFI wrappers for the Linux Pluggable Authentication Modules (PAM)"
 license = "MIT OR Apache-2.0"
 categories = ["authentication", "api-bindings", "external-ffi-bindings", "os::unix-apis"]
@@ -12,15 +12,21 @@ documentation = "https://docs.rs/pam-sys/"
 readme = "README.md"
 include = [ "LICENSE-*", "README.md", "CHANGELOG.md", "src/lib.rs", "build.rs", "wrapper.h"]
 
-edition = "2018"
+edition = "2021"
 build = "build.rs"
 links = "pam"
 
 [badges]
-azure-devops = { project = "1wilkens/ci", pipeline = "pam-sys" }
+maintainance = { status = "actively-maintained", badge = "https://img.shields.io/badge/maintenance-actively%20maintained-brightgreen.svg" }
 
 [dependencies]
-libc = "^0.2.65"
+libc = "0.2"
 
 [build-dependencies]
-bindgen = { version = "0.69", default-features = false }
+bindgen = { version = "0.71", default-features = false, features = ["runtime"], optional = true }
+
+[features]
+generate-bindings = ["bindgen"]
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(PAM_SYS_IMPL, values("openpam", "linux-pam"))'] }

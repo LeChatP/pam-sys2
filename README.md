@@ -1,24 +1,33 @@
-# pam-sys - Rust FFI bindings to the Linux Pluggable Authentication Modules (PAM)
+# pam-sys2 - Rust FFI bindings to the Linux and Open Pluggable Authentication Modules (PAM)
 
 [![Crates.io](https://img.shields.io/crates/v/pam-sys.svg)](https://crates.io/crates/pam-sys)
 [![Documentation](https://docs.rs/pam-sys/badge.svg)](https://docs.rs/pam-sys/)
-[![Build Status Azure](https://dev.azure.com/1wilkens/ci/_apis/build/status/pam-sys?branchName=master)](https://dev.azure.com/1wilkens/ci/_build/latest?definitionId=1&branchName=master)
-[![Build Status Cirrus](https://img.shields.io/cirrus/github/1wilkens/pam-sys/master?style=flat-square)](https://cirrus-ci.com/github/1wilkens/pam-sys)
 [![License](https://img.shields.io/crates/l/pam-sys.svg?branch=master)](https://travis-ci.org/1wilkens/pam-sys)
 
 This crate uses [`bindgen`](https://github.com/rust-lang/rust-bindgen) to generate the raw FFI
 definitions for PAM. For a rustified API consider using [`pam`](https://github.com/1wilkens/pam).
+
+## Fork maintenance
+
+Hello! I forked this crate to provide maintenance and updates, since the original author has not been active for several years. This version integrates the latest changes from the original repository and adds some improvements, such as support for both Linux-PAM and OpenPAM, updated bindings generation, and with a functionnal CI.
+
+While I will do my best to keep this fork up-to-date and functional, please note that I strongly recommend using `nonstick` instead of this crate for new projects.
+
+## Changes
+
+This crate is a fork of the original `pam-sys` crate, with the following changes:
+- Updated to use the latest version of `bindgen` for better compatibility and features.
+- update Rust edition to 2021
+- Added support for both Linux-PAM and OpenPAM (Merging 1wilkens/pam-sys/pulls/28 by @coastalwhite with some edits).
+- Use pre-generated bindings for Linux-PAM by default (by @coastalwhite).
+- Fixing zigbuild issue (1wilkens/pam-sys/issues/32)
+- Added `generate-bindings` feature to control when bindings are generated.
 
 ## Supported Rust versions (MSRV)
 The library is only continuously built against Rust stable, beta and nightly but as it does not use
 a lot of new language features it should probably compile on older versions as well. The MSRV is
 mostly determined by the version of `bindgen` used. If you encounter problems building on older
 versions and a small fix can be applied to make the build succeed, consider opening a pull request.
-
-## Supported operating systems
-Currently this library is only thoroughly tested on Linux (due to the lack of reliable access to
-other platforms). However, support of all operating systems supported by PAM is an explicit goal.
-If you spot an error, please open an issue and I'll try to resolve it.
 
 ## License
 

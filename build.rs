@@ -208,7 +208,7 @@ fn generate_linuxpam(out_dir: &PathBuf) {
         },
     )
     .default_macro_constant_type(bindgen::MacroTypeVariation::Signed)
-    .raw_line("use libc::{uid_t, gid_t, group, passwd, spwd};")
+    .raw_line("use libc::{gid_t, group, passwd, spwd, uid_t};")
     .blocklist_type(".*gid_t")
     .blocklist_type(".*uid_t")
     .blocklist_type("group")
@@ -222,6 +222,8 @@ fn generate_linuxpam(out_dir: &PathBuf) {
 
 #[cfg(feature = "generate-bindings")]
 fn generate_openpam(out_dir: &PathBuf) {
+    use std::fs;
+
     sparse_checkout(
         OPEN_PAM_REPO,
         "main",
@@ -229,6 +231,7 @@ fn generate_openpam(out_dir: &PathBuf) {
         OPEN_PAM_SUBFOLDERS,
     );
     base_builder("wrapper-openpam.h", &[], &[])
+        .raw_line("use libc::passwd;")
         .blocklist_type("passwd")
         .allowlist_var("OPENPAM_.*")
         .allowlist_function("openpam_.*")
@@ -237,6 +240,10 @@ fn generate_openpam(out_dir: &PathBuf) {
         .expect("Unable to generate OpenPAM bindings")
         .write_to_file(out_dir.join("openpam.rs"))
         .expect("Couldn't write OpenPAM bindings");
+    // Hack to change the type of _bindgen_ty_1 and _bindgen_ty_2 from c_uint to c_int
+    let mut content = fs::read_to_string(&out_dir.join("openpam.rs")).unwrap();
+    content = content.replace("= libc::c_uint;", "= libc::c_int;");
+    fs::write(out_dir.join("openpam.rs"), content).expect("Couldn't update OpenPAM bindings");
 }
 
 fn main() {

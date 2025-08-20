@@ -35,14 +35,14 @@ pub const PAM_IMPLEMENTATION: PamImplementation = {
     compile_error!("No valid PAM implementation selected")
 };
 
-#[cfg(all(any(doc, PAM_SYS_IMPL = "linux-pam"), feature = "generate-bindings"))]
+#[cfg(all(PAM_SYS_IMPL = "linux-pam", feature = "generate-bindings"))]
 pub mod linuxpam {
     include!(concat!(env!("OUT_DIR"), "/linuxpam.rs"));
 }
 
 #[cfg(all(
-    any(doc, PAM_SYS_IMPL = "linux-pam"),
-    not(feature = "generate-bindings")
+    PAM_SYS_IMPL = "linux-pam", // docs works only on Linux
+    not(feature = "generate-bindings"),
 ))]
 pub mod linuxpam;
 
@@ -126,7 +126,7 @@ mod tests {
                     let user = CString::new("test_user").unwrap();
 
                     // Create a minimal conversation structure
-                    extern "C" fn conv_func(
+                    unsafe extern "C" fn conv_func(
                         _num_msg: ::std::os::raw::c_int,
                         _msg: *mut *const pam_message,
                         _resp: *mut *mut pam_response,

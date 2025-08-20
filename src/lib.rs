@@ -14,4 +14,86 @@
     deref_nullptr
 )]
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum PamImplementation {
+    LinuxPAM,
+    OpenPAM,
+}
+
+pub const PAM_IMPLEMENTATION: PamImplementation = {
+    #[cfg(PAM_SYS_IMPL = "linux-pam")]
+    {
+        PamImplementation::LinuxPAM
+    }
+
+    #[cfg(PAM_SYS_IMPL = "openpam")]
+    {
+        PamImplementation::OpenPAM
+    }
+
+    #[cfg(not(any(
+        PAM_SYS_IMPL = "linux-pam",
+        PAM_SYS_IMPL = "openpam",
+    )))]
+    compile_error!("No valid PAM implementation selected")
+};
+
+#[cfg(all(any(doc, PAM_SYS_IMPL = "linux-pam"), feature = "generate-bindings"))]
+pub mod linux_pam {
+    include!(concat!(env!("OUT_DIR"), "/linux_pam.rs"));
+}
+
+#[cfg(all(any(doc, PAM_SYS_IMPL = "linux-pam"), not(feature = "generate-bindings")))]
+pub mod linux_pam;
+
+#[cfg(all(any(doc, PAM_SYS_IMPL = "openpam"), feature = "generate-bindings"))]
+pub mod open_pam {
+    include!(concat!(env!("OUT_DIR"), "/openpam.rs"));
+}
+
+#[cfg(all(any(doc, PAM_SYS_IMPL = "openpam"), not(feature = "generate-bindings")))]
+pub mod open_pam;
+
+#[cfg(PAM_SYS_IMPL = "linux-pam")]
+pub use linux_pam::*;
+
+#[cfg(PAM_SYS_IMPL = "openpam")]
+pub use openpam::*;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_pam_implementation() {
+        match PAM_IMPLEMENTATION {
+            PamImplementation::LinuxPAM => {
+                assert!(cfg!(PAM_SYS_IMPL = "linux-pam"));
+            }
+            PamImplementation::OpenPAM => {
+                assert!(cfg!(PAM_SYS_IMPL = "openpam"));
+            }
+        }
+    }
+
+    #[test]
+    fn test_pam_is_working() {
+        unsafe{
+            match PAM_IMPLEMENTATION {
+                PamImplementation::LinuxPAM => {
+                    use std::ffi::CString;
+                    let service = CString::new("test_service").unwrap();
+                    let user = CString::new("test_user").unwrap();
+                    let mut pamh: *mut linux_pam::pam_handle_t = std::ptr::null_mut();
+                    assert_eq!(linux_pam::pam_start(service.as_ptr(), user.as_ptr(), std::ptr::null_mut(), &mut pamh), PAM_SUCCESS);
+                    assert!(!pamh.is_null());
+                    assert_eq!(linux_pam::pam_end(pamh, PAM_SUCCESS), PAM_SUCCESS);
+                }
+                PamImplementation::OpenPAM => {
+                    assert!(open_pam::openpam_start("test_service", "test_user").is_ok());
+                }
+            }
+        }
+        
+    }
+        
+}

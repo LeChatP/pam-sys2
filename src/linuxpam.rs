@@ -118,13 +118,18 @@ pub struct pam_message {
     pub msg_style: libc::c_int,
     pub msg: *const libc::c_char,
 }
+
+// THINK: Editing the generated file does not seem to be a good idea
+const POINTER_SIZE: usize = std::mem::size_of::<*const ()>();
+const INTEGET_SIZE: usize = std::mem::size_of::<libc::c_int>();
+
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of pam_message"][::std::mem::size_of::<pam_message>() - 16usize];
-    ["Alignment of pam_message"][::std::mem::align_of::<pam_message>() - 8usize];
+    ["Size of pam_message"][::std::mem::size_of::<pam_message>() - 2 * POINTER_SIZE];
+    ["Alignment of pam_message"][::std::mem::align_of::<pam_message>() - POINTER_SIZE];
     ["Offset of field: pam_message::msg_style"]
         [::std::mem::offset_of!(pam_message, msg_style) - 0usize];
-    ["Offset of field: pam_message::msg"][::std::mem::offset_of!(pam_message, msg) - 8usize];
+    ["Offset of field: pam_message::msg"][::std::mem::offset_of!(pam_message, msg) - POINTER_SIZE];
 };
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -134,11 +139,11 @@ pub struct pam_response {
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of pam_response"][::std::mem::size_of::<pam_response>() - 16usize];
-    ["Alignment of pam_response"][::std::mem::align_of::<pam_response>() - 8usize];
+    ["Size of pam_response"][::std::mem::size_of::<pam_response>() - 2usize * POINTER_SIZE];
+    ["Alignment of pam_response"][::std::mem::align_of::<pam_response>() - POINTER_SIZE];
     ["Offset of field: pam_response::resp"][::std::mem::offset_of!(pam_response, resp) - 0usize];
     ["Offset of field: pam_response::resp_retcode"]
-        [::std::mem::offset_of!(pam_response, resp_retcode) - 8usize];
+        [::std::mem::offset_of!(pam_response, resp_retcode) - POINTER_SIZE];
 };
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -155,11 +160,11 @@ pub struct pam_conv {
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of pam_conv"][::std::mem::size_of::<pam_conv>() - 16usize];
-    ["Alignment of pam_conv"][::std::mem::align_of::<pam_conv>() - 8usize];
+    ["Size of pam_conv"][::std::mem::size_of::<pam_conv>() - 2usize * POINTER_SIZE];
+    ["Alignment of pam_conv"][::std::mem::align_of::<pam_conv>() - POINTER_SIZE];
     ["Offset of field: pam_conv::conv"][::std::mem::offset_of!(pam_conv, conv) - 0usize];
     ["Offset of field: pam_conv::appdata_ptr"]
-        [::std::mem::offset_of!(pam_conv, appdata_ptr) - 8usize];
+        [::std::mem::offset_of!(pam_conv, appdata_ptr) - POINTER_SIZE];
 };
 unsafe extern "C" {
     pub fn pam_start(
@@ -417,20 +422,27 @@ pub struct pam_modutil_privs {
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of pam_modutil_privs"][::std::mem::size_of::<pam_modutil_privs>() - 32usize];
-    ["Alignment of pam_modutil_privs"][::std::mem::align_of::<pam_modutil_privs>() - 8usize];
+    ["Size of pam_modutil_privs"][::std::mem::size_of::<pam_modutil_privs>()
+        - (POINTER_SIZE + 5usize * INTEGET_SIZE).div_ceil(POINTER_SIZE) * POINTER_SIZE];
+    ["Alignment of pam_modutil_privs"][::std::mem::align_of::<pam_modutil_privs>() - POINTER_SIZE];
     ["Offset of field: pam_modutil_privs::grplist"]
         [::std::mem::offset_of!(pam_modutil_privs, grplist) - 0usize];
     ["Offset of field: pam_modutil_privs::number_of_groups"]
-        [::std::mem::offset_of!(pam_modutil_privs, number_of_groups) - 8usize];
+        [::std::mem::offset_of!(pam_modutil_privs, number_of_groups) - POINTER_SIZE];
     ["Offset of field: pam_modutil_privs::allocated"]
-        [::std::mem::offset_of!(pam_modutil_privs, allocated) - 12usize];
-    ["Offset of field: pam_modutil_privs::old_gid"]
-        [::std::mem::offset_of!(pam_modutil_privs, old_gid) - 16usize];
-    ["Offset of field: pam_modutil_privs::old_uid"]
-        [::std::mem::offset_of!(pam_modutil_privs, old_uid) - 20usize];
-    ["Offset of field: pam_modutil_privs::is_dropped"]
-        [::std::mem::offset_of!(pam_modutil_privs, is_dropped) - 24usize];
+        [::std::mem::offset_of!(pam_modutil_privs, allocated) - (POINTER_SIZE + INTEGET_SIZE)];
+    ["Offset of field: pam_modutil_privs::old_gid"][::std::mem::offset_of!(
+        pam_modutil_privs,
+        old_gid
+    ) - (POINTER_SIZE + 2usize * INTEGET_SIZE)];
+    ["Offset of field: pam_modutil_privs::old_uid"][::std::mem::offset_of!(
+        pam_modutil_privs,
+        old_uid
+    ) - (POINTER_SIZE + 3usize * INTEGET_SIZE)];
+    ["Offset of field: pam_modutil_privs::is_dropped"][::std::mem::offset_of!(
+        pam_modutil_privs,
+        is_dropped
+    ) - (POINTER_SIZE + 4usize * INTEGET_SIZE)];
 };
 unsafe extern "C" {
     pub fn pam_modutil_drop_priv(

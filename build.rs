@@ -251,7 +251,11 @@ fn main() {
     pam_implementation.generate_bindings(&PathBuf::from(env::var("OUT_DIR").unwrap()));
 
     println!(
-        "cargo:rustc-cfg=PAM_SYS_IMPL=\"{impl_name}\"",
+        "cargo:rustc-cfg={PAM_IMPL_ENV_VAR}=\"{impl_name}\"",
+        impl_name = pam_implementation.impl_name()
+    );
+    println!(
+        "cargo:{PAM_IMPL_ENV_VAR}={impl_name}",
         impl_name = pam_implementation.impl_name()
     );
 

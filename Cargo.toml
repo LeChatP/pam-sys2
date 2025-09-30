@@ -2,15 +2,31 @@
 
 name = "pam-sys2"
 version = "1.0.1"
-authors = ["Florian Wilkens <gh@1wilkens.org>", "LeChatP <lechatp@outlook.fr>"]
+authors = [
+    "Florian Wilkens <gh@1wilkens.org>",
+    "LeChatP <lechatp@outlook.fr>",
+    "Hakurei Reimu <reimu@genmeta.net>",
+]
 description = "FFI wrappers for the Linux Pluggable Authentication Modules (PAM)"
 license = "MIT OR Apache-2.0"
-categories = ["authentication", "api-bindings", "external-ffi-bindings", "os::unix-apis"]
+categories = [
+    "authentication",
+    "api-bindings",
+    "external-ffi-bindings",
+    "os::unix-apis",
+]
 
 repository = "https://github.com/lechatp/pam-sys.git"
 documentation = "https://docs.rs/pam-sys/"
 readme = "README.md"
-include = [ "LICENSE-*", "README.md", "CHANGELOG.md", "src/*.rs", "build.rs", "wrapper.h"]
+include = [
+    "LICENSE-*",
+    "README.md",
+    "CHANGELOG.md",
+    "src/*.rs",
+    "build.rs",
+    "wrapper.h",
+]
 
 edition = "2021"
 build = "build.rs"
@@ -23,10 +39,14 @@ maintainance = { status = "actively-maintained", badge = "https://img.shields.io
 libc = "0.2"
 
 [build-dependencies]
-bindgen = { version = "0.72.1", default-features = false, features = ["runtime"], optional = true }
+bindgen = { version = "0.72.1", default-features = false, features = [
+    "runtime",
+], optional = true }
 
 [features]
 generate-bindings = ["bindgen"]
 
 [lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ['cfg(PAM_SYS_IMPL, values("openpam", "linux-pam"))'] }
+unexpected_cfgs = { level = "warn", check-cfg = [
+    'cfg(PAM_SYS_IMPL, values("openpam", "linux-pam"))',
+] }

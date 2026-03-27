@@ -1,7 +1,7 @@
 [package]
 
 name = "pam-sys2"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Florian Wilkens <gh@1wilkens.org>", "LeChatP <lechatp@outlook.fr>"]
 description = "FFI wrappers for the Linux Pluggable Authentication Modules (PAM)"
 license = "MIT OR Apache-2.0"
@@ -23,7 +23,7 @@ maintainance = { status = "actively-maintained", badge = "https://img.shields.io
 libc = "0.2"
 
 [build-dependencies]
-bindgen = { version = "0.71", default-features = false, features = ["runtime"], optional = true }
+bindgen = { version = "0.72.1", default-features = false, features = ["runtime"], optional = true }
 
 [features]
 generate-bindings = ["bindgen"]
